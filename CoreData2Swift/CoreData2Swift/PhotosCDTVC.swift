@@ -11,16 +11,8 @@ import CoreData
 
 class PhotosCDTVC: CoreDataTableViewController {
     var database:  Database!
-    
-    var moc: NSManagedObjectContext?
     var document: MyDocument? { return database.document}
     
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        if let context = self.moc {
-            self.setupFetchedResultsController(context)
-        }
-    }
 
     // MARK: - Table View Data Source
 
@@ -35,19 +27,6 @@ class PhotosCDTVC: CoreDataTableViewController {
 		return cell
 	}
 
-    func setupFetchedResultsController(context:NSManagedObjectContext) {
-        
-        let request = NSFetchRequest(entityName: "Photo")
-        request.sortDescriptors = [NSSortDescriptor(key: "title",
-            ascending: true,
-            selector: #selector(NSString.localizedStandardCompare(_:)))]
-        
-        self.fetchedResultsController = NSFetchedResultsController(fetchRequest: request,
-                                                                   managedObjectContext: context,
-                                                                   sectionNameKeyPath: nil,
-                                                                   cacheName: nil)
-        
-    }
     
     override func tableView(tableView: UITableView,
                             commitEditingStyle editingStyle: UITableViewCellEditingStyle,
@@ -58,7 +37,7 @@ class PhotosCDTVC: CoreDataTableViewController {
             guard let photo = self.fetchedResultsController?.objectAtIndexPath(indexPath) as? Photo,
                 let context = photo.managedObjectContext     else {return}
             context.deleteObject(photo)
-            self.document?.saveDocument()
+            document?.saveDocument()
         default:break
         }
     }
@@ -71,37 +50,24 @@ class PhotosCDTVC: CoreDataTableViewController {
     }
 
     // MARK: - Navigation
-	
-    func prepareViewController(viewController : UIViewController,
-                               forSegue segue : String?,
-                      fromIndexPath indexPath : NSIndexPath) {
-        
-        guard let photo = self.fetchedResultsController?.objectAtIndexPath(indexPath) as? Photo
-                         else { return }
-        var ivc = viewController
-                        
-        if let vc = viewController as? UINavigationController {
+    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+        guard  segue.identifier == Storyboard.SegueIdentifierPhoto ,
+            let cell = sender as? UITableViewCell,
+            let indexPath = self.tableView.indexPathForCell(cell),
+            
+            let photo = self.fetchedResultsController?.objectAtIndexPath(indexPath) as? Photo
+            
+            else {return}
+        var ivc = segue.destinationViewController
+        if let vc = ivc as? UINavigationController {
             ivc = vc.visibleViewController!
         }
         guard let ivcm = ivc as? ImageViewController  else { return }
-                        
-            ivcm.imageURL = NSURL(string: photo.imageURL)
-            ivcm.title = photo.title
-            ivcm.navigationItem.leftBarButtonItem =
-                                         self.splitViewController?.displayModeButtonItem()
-            ivcm.navigationItem.leftItemsSupplementBackButton = true
+        
+        ivcm.imageURL = photo.imageURL
+        ivcm.title = photo.title
+        
+        ivcm.navigationItem.leftBarButtonItem = self.splitViewController?.displayModeButtonItem()
+        ivcm.navigationItem.leftItemsSupplementBackButton = true
     }
-    
-
-	override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-		
-		
-        guard let cell = sender as? UITableViewCell,
-              let indexPath = self.tableView.indexPathForCell(cell)
-            else {return}
-		self.prepareViewController(segue.destinationViewController,
-                                         forSegue: segue.identifier,
-                                    fromIndexPath: indexPath)
-	}
-	
 }

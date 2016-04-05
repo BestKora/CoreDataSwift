@@ -67,5 +67,4 @@ final class Photo: NSManagedObject {
             }
         } */
     }
-
-}
+ }

@@ -17,6 +17,30 @@ class JustPostedFlickrPhotosTVC: PhotosCDTVC {
              fetchPhotos()
         }
     }
+    
+    var moc: NSManagedObjectContext?
+
+    // MARK: - Life Cycle
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        if let context = self.moc {
+            self.setupFetchedResultsController(context)
+        }
+    }
+    
+    func setupFetchedResultsController(context:NSManagedObjectContext) {
+        
+        let request = NSFetchRequest(entityName: "Photo")
+        request.sortDescriptors = [NSSortDescriptor(key: "title",
+            ascending: true,
+            selector: #selector(NSString.localizedStandardCompare(_:)))]
+        
+        self.fetchedResultsController = NSFetchedResultsController(fetchRequest: request,
+                                                                   managedObjectContext: context,
+                                                                   sectionNameKeyPath: nil,
+                                                                   cacheName: nil)
+        
+    }
 
     @IBAction func fetchPhotos(){
         self.refreshControl?.beginRefreshing()
@@ -34,8 +58,7 @@ class JustPostedFlickrPhotosTVC: PhotosCDTVC {
                 guard let url = localURL,
                     let data = NSData(contentsOfURL: url),
                     let json =
-                       try? NSJSONSerialization.JSONObjectWithData(data,
-                                                                   options: .AllowFragments),
+                       try? NSJSONSerialization.JSONObjectWithData(data, options: .AllowFragments),
                     let flickrPhotos =
                         json.valueForKeyPath(FLICKR_RESULTS_PHOTOS) as? [[String : AnyObject]]
                     else { return}
@@ -45,9 +68,9 @@ class JustPostedFlickrPhotosTVC: PhotosCDTVC {
                     
                     // Записываем в Core Data
                     Photo.newPhotos (flickrPhotos, context: context)
-                    /*    _ = flickrPhotos.flatMap({ (json) -> Photo? in
+                        _ = flickrPhotos.flatMap({ (json) -> Photo? in
                         return Photo.init(json: json, context: context) })
-                    */
+                    
                     let startTime = CFAbsoluteTimeGetCurrent()
                     
                     self.coreDataStack.saveMainContext()

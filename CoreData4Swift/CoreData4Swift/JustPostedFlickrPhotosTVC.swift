@@ -11,13 +11,35 @@ import CoreData
 
 class JustPostedFlickrPhotosTVC: PhotographersCDTVC {
     
-    override var coreDataStack: CoreDataStack! {
+    var coreDataStack: CoreDataStack! {
         didSet {
             self.moc = coreDataStack.mainMoc
              fetchPhotos()
         }
     }
-  
+    
+    var moc: NSManagedObjectContext?
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        if let context = self.moc {
+            self.setupFetchedResultsController(context)
+        }
+    }
+    
+    func setupFetchedResultsController(context:NSManagedObjectContext) {
+        
+        let request = NSFetchRequest(entityName: "Photographer")
+        request.predicate = nil
+        request.sortDescriptors = [NSSortDescriptor(key: "name", ascending: true,
+            selector: #selector(NSString.localizedStandardCompare(_:)))]
+        
+        self.fetchedResultsController = NSFetchedResultsController(fetchRequest: request,
+                                                                   managedObjectContext: context,
+                                                                   sectionNameKeyPath: nil,
+                                                                   cacheName: nil)
+    }
+
     // создание work MOC
     lazy var workMoc: NSManagedObjectContext = {
         let moc = NSManagedObjectContext(concurrencyType: .PrivateQueueConcurrencyType)

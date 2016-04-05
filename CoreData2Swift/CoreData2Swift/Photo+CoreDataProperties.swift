@@ -11,9 +11,18 @@ import Foundation
 import CoreData
 
 extension Photo {
-    @NSManaged  var imageURL: String
+    @NSManaged  var imageURLS: String
     @NSManaged  var subtitle: String
     @NSManaged  var title: String
     @NSManaged  var unique: String
     @NSManaged  var whoTook: Photographer?
+    var imageURL:  NSURL?{
+        get {
+            return NSURL(string: self.imageURLS)
+        }
+        set {
+            self.imageURLS = newValue?.absoluteString ?? ""
+        }
+    }
+
   }

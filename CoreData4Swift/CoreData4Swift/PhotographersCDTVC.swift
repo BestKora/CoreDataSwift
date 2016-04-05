@@ -8,33 +8,12 @@ import UIKit
 import CoreData
 
 class PhotographersCDTVC: CoreDataTableViewController {
-    var coreDataStack: CoreDataStack!
-    var moc: NSManagedObjectContext?
     
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        if let context = self.moc {
-            self.setupFetchedResultsController(context)
-        }
-    }
-    
-   
-    func setupFetchedResultsController(context:NSManagedObjectContext) {
-        
-        let request = NSFetchRequest(entityName: "Photographer")
-        request.predicate = nil
-        request.sortDescriptors = [NSSortDescriptor(key: "name", ascending: true,
-            selector: #selector(NSString.localizedStandardCompare(_:)))]
-        
-        self.fetchedResultsController = NSFetchedResultsController(fetchRequest: request,
-                                                                   managedObjectContext: coreDataStack.mainMoc,
-                                                                   sectionNameKeyPath: nil,
-                                                                   cacheName: nil)
-    }
+    override func tableView(tableView: UITableView,
+                            cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
 
-    override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-
-        let cell = tableView.dequeueReusableCellWithIdentifier("Photographer Cell", forIndexPath: indexPath)
+        let cell = tableView.dequeueReusableCellWithIdentifier("Photographer Cell",
+                                                                    forIndexPath: indexPath)
         let photographer = self.fetchedResultsController?.objectAtIndexPath(indexPath) as? Photographer
         
         cell.textLabel?.text = photographer?.name
@@ -44,14 +23,12 @@ class PhotographersCDTVC: CoreDataTableViewController {
 
 	}
 	
-	
     // MARK: - Navigation
     
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
         guard let cell = sender as? UITableViewCell,
             let indexPath = self.tableView.indexPathForCell(cell),
-            let photographer = self.fetchedResultsController?.objectAtIndexPath(indexPath)
-                                                                              as? Photographer,
+            let photographer = self.fetchedResultsController?.objectAtIndexPath(indexPath) as? Photographer,
             let vc = segue.destinationViewController as? PhotosByPhotographerCDTVC
             else {return}
         vc.photographer = photographer

@@ -14,7 +14,7 @@ final class Photo: NSManagedObject {
     convenience init?(json : [String : AnyObject], context: NSManagedObjectContext) {
         guard var title = json[FLICKR_PHOTO_TITLE] as? String,
             var subtitle = (json as AnyObject).valueForKeyPath(FLICKR_PHOTO_DESCRIPTION) as? String,
-            let imageURL = FlickrFetcher.URLforPhoto(json,format:FlickrPhotoFormatLarge)?.absoluteString,
+            let imageURL = FlickrFetcher.URLforPhoto(json,format:FlickrPhotoFormatLarge),
             let unique = json[FLICKR_PHOTO_ID] as? String,
             let photographer =  json[FLICKR_PHOTO_OWNER] as? String
             else {return nil}
@@ -28,7 +28,9 @@ final class Photo: NSManagedObject {
         
         guard let entity = NSEntityDescription.entityForName("Photo", inManagedObjectContext: context)
             else {return nil}
+        
         self.init(entity: entity, insertIntoManagedObjectContext: context)
+        
         self.unique = unique
         self.title = titleNew == "" ? "Unknown": titleNew
         self.subtitle = subtitle
@@ -48,16 +50,16 @@ final class Photo: NSManagedObject {
             fatalError("Ошибка при выборе списка фотографий!")
         }
         let uniquesFlickr = json.flatMap({$0[FLICKR_PHOTO_ID] as? String}).sort()
-      
+        
         let uniquesSet = Set(uniques)
         var news = Set(uniquesFlickr)
         news.subtractInPlace(uniquesSet)
         print ("кол-во новых элементов \(news.count)")
-              for unic in news {
+    /*    for unic in news {
             if let index = json.indexOf({$0[FLICKR_PHOTO_ID] as? String == unic}){
-              _ =  Photo.init(json: json[index], context: context)
+                _ =  Photo.init(json: json[index], context: context)
             }
-        }
+        }*/
     }
     
     override func prepareForDeletion() {

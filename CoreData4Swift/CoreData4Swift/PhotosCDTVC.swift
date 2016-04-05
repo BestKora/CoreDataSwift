@@ -38,7 +38,6 @@ class PhotosCDTVC: CoreDataTableViewController {
                let cell = sender as? UITableViewCell,
                let indexPath = self.tableView.indexPathForCell(cell),
                let photo = self.fetchedResultsController?.objectAtIndexPath(indexPath) as? Photo
-            
             else {return}
         var ivc = segue.destinationViewController
         if let vc = ivc as? UINavigationController {

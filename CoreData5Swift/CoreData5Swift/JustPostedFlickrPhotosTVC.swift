@@ -10,14 +10,33 @@ import UIKit
 import CoreData
 
 class JustPostedFlickrPhotosTVC: PhotographersCDTVC {
+    var moc: NSManagedObjectContext?
     
-
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        moc = CoreDataStack.defaultStack.mainMoc
+        
+        if let context = self.moc {
+            self.setupFetchedResultsController(context)
+        }
         fetchPhotos()
-
-}
-
+    }
+    
+    func setupFetchedResultsController(context:NSManagedObjectContext) {
+        
+        let request = NSFetchRequest(entityName: "Photographer")
+        request.predicate = nil
+        request.sortDescriptors = [NSSortDescriptor(key: "name", ascending: true,
+            selector: #selector(NSString.localizedStandardCompare(_:)))]
+        
+        self.fetchedResultsController = NSFetchedResultsController(fetchRequest: request,
+                                                                   managedObjectContext: context,
+                                                                   sectionNameKeyPath: nil,
+                                                                   cacheName: nil)
+    }
+    
+    
     // создание work MOC
     lazy var workMoc: NSManagedObjectContext = {
         let moc = NSManagedObjectContext(concurrencyType: .PrivateQueueConcurrencyType)
@@ -25,7 +44,7 @@ class JustPostedFlickrPhotosTVC: PhotographersCDTVC {
         moc.mergePolicy = NSMergeByPropertyObjectTrumpMergePolicy
         return moc
     }()
-
+    
 
     @IBAction func fetchPhotos(){
         self.refreshControl?.beginRefreshing()
@@ -61,7 +80,7 @@ class JustPostedFlickrPhotosTVC: PhotographersCDTVC {
                     let elapsedTime = (endTime - startTime) * 1000
                     print("Saving work context took \(elapsedTime) ms")
                     
-                    self.coreDataStack.saveMainContext()
+                    CoreDataStack.defaultStack.saveMainContext()
 
                 dispatch_async(dispatch_get_main_queue()){
                     self.refreshControl?.endRefreshing()

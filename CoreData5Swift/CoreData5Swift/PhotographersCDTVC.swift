@@ -8,32 +8,6 @@ import UIKit
 import CoreData
 
 class PhotographersCDTVC: CoreDataTableViewController {
-    var coreDataStack: CoreDataStack!
-    var moc: NSManagedObjectContext?
-    
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        coreDataStack = CoreDataStack.defaultStack
-        moc = coreDataStack.mainMoc
- 
-        if let context = self.moc {
-            self.setupFetchedResultsController(context)
-        }
-    }
-    
-   
-    func setupFetchedResultsController(context:NSManagedObjectContext) {
-        
-        let request = NSFetchRequest(entityName: "Photographer")
-        request.predicate = nil
-        request.sortDescriptors = [NSSortDescriptor(key: "name", ascending: true,
-            selector: #selector(NSString.localizedStandardCompare(_:)))]
-        
-        self.fetchedResultsController = NSFetchedResultsController(fetchRequest: request,
-                                                                   managedObjectContext: coreDataStack.mainMoc,
-                                                                   sectionNameKeyPath: nil,
-                                                                   cacheName: nil)
-    }
 
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
 
