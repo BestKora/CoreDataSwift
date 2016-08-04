@@ -38,19 +38,19 @@ class CoreDataStack: NSObject {
        
     }
     
-    lazy var managedObjectModel: NSManagedObjectModel = {
+    lazy var model: NSManagedObjectModel = {
         let modelURL = NSBundle.mainBundle().URLForResource(moduleName, withExtension: "momd")!
         return NSManagedObjectModel(contentsOfURL: modelURL)!
     }()
     
-    lazy var applicationDocumentsDirectory: NSURL = {
+    lazy var directory: NSURL = {
         return NSFileManager.defaultManager().URLsForDirectory(.DocumentDirectory, inDomains: .UserDomainMask).last!
     }()
     
-    lazy var persistentStoreCoordinator: NSPersistentStoreCoordinator = {
-        let coordinator = NSPersistentStoreCoordinator(managedObjectModel: self.managedObjectModel)
+    lazy var coordinator: NSPersistentStoreCoordinator = {
+        let coordinator = NSPersistentStoreCoordinator(managedObjectModel: self.model)
         
-        let persistentStoreURL = self.applicationDocumentsDirectory.URLByAppendingPathComponent("\(moduleName).sqlite")
+        let persistentStoreURL = self.directory.URLByAppendingPathComponent("\(moduleName).sqlite")
         print (persistentStoreURL)
         do {
             try coordinator.addPersistentStoreWithType(NSSQLiteStoreType,
@@ -69,7 +69,7 @@ class CoreDataStack: NSObject {
     private lazy var privateMoc: NSManagedObjectContext = {
         let moc = NSManagedObjectContext(concurrencyType: .PrivateQueueConcurrencyType)
         
-        moc.persistentStoreCoordinator = self.persistentStoreCoordinator
+        moc.persistentStoreCoordinator = self.coordinator
        
         moc.mergePolicy =  NSMergeByPropertyObjectTrumpMergePolicy
 

@@ -21,7 +21,7 @@ class JustPostedFlickrPhotosTVC: PhotosCDTVC {
     var moc: NSManagedObjectContext?
 
     // MARK: - Life Cycle
-    override func viewDidLoad() {
+     override func viewDidLoad() {
         super.viewDidLoad()
         if let context = self.moc {
             self.setupFetchedResultsController(context)
@@ -64,21 +64,15 @@ class JustPostedFlickrPhotosTVC: PhotosCDTVC {
                     else { return}
                 
                 dispatch_async(dispatch_get_main_queue()){
+                    
                     self.refreshControl?.endRefreshing()
                     
-                    // Записываем в Core Data
+                   // Записываем в Core Data
                     Photo.newPhotos (flickrPhotos, context: context)
                         _ = flickrPhotos.flatMap({ (json) -> Photo? in
                         return Photo.init(json: json, context: context) })
-                    
-                    let startTime = CFAbsoluteTimeGetCurrent()
-                    
                     self.coreDataStack.saveMainContext()
-                    
-                    let endTime = CFAbsoluteTimeGetCurrent()
-                    let elapsedTime = (endTime - startTime) * 1000
-                    print("Saving the context took \(elapsedTime) ms")
-
+         
                 }
             }
             task.resume()

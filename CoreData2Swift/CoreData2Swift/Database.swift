@@ -16,7 +16,7 @@ class MyDocument :UIManagedDocument {
     
     override func contentsForType(typeName: String) throws -> AnyObject {
         print ("Auto-Saving Document")
-       return try! super.contentsForType(typeName)
+        return try! super.contentsForType(typeName)
     }
     
     override func handleError(error: NSError, userInteractionPermitted: Bool) {
@@ -28,29 +28,79 @@ class MyDocument :UIManagedDocument {
             
         }
     }
-
+    
     func saveDocument(){
         let fileNormal = documentState.contains([.Normal])
         if  fileNormal {
-           saveToURL(fileURL,forSaveOperation: .ForOverwriting) { (success) -> Void in
-                    // block для выполнения после сохранения документа
-                    if (success) {
-                        print("Запись: Success")
-                    } else {
-                        print("Не могу записать file")
-                    }
+            saveToURL(fileURL,forSaveOperation: .ForOverwriting) { (success) -> Void in
+                // block для выполнения после сохранения документа
+                if (success) {
+                    print("Запись: Success")
+                } else {
+                    print("Не могу записать file")
+                }
             }
         } else {
             print("Документ не открыт, его состояние \(documentState)")
         }
     }
-    }
-
-    
-
+}
 
 class Database: NSObject {
+    let printOpenFile: (Bool) -> Void = {  (success:Bool) -> Void in
+        if (success) {
+            print("File существует: Открыт")
+        } else {
+            print("File существует: Не могу открыть")
+        }
+    }
     
+    let printCreateFile: (Bool) -> Void  = {  (success:Bool) -> Void in
+        if (success) {
+            print("File создан: Success")
+        } else {
+            print("Не могу создать file")
+        }
+    }
+
+    func useDocument (completion: (success:Bool, document: MyDocument) -> Void) {
+        let fileManager = NSFileManager.defaultManager()
+        let doc = "database"
+        let url = self.dir.URLByAppendingPathComponent(doc)
+        print (url)
+        let document = MyDocument(fileURL: url)
+        document.persistentStoreOptions =
+            [ NSMigratePersistentStoresAutomaticallyOption: true,
+              NSInferMappingModelAutomaticallyOption: true]
+        
+        document.managedObjectContext.mergePolicy = NSMergeByPropertyObjectTrumpMergePolicy
+        
+        if let parentContext = document.managedObjectContext.parentContext{
+            parentContext.performBlock {
+                parentContext.mergePolicy =  NSMergeByPropertyObjectTrumpMergePolicy
+            }
+        }
+        
+        if !fileManager.fileExistsAtPath(url.path!) {
+            document.saveToURL(url, forSaveOperation: .ForCreating) { (success) -> Void in
+                // block для выполнения, когда документ создан
+                self.printCreateFile(success)
+                if success {
+                   completion (success: success, document: document)                }
+            }
+        }else  {
+            if document.documentState == .Closed {
+                document.openWithCompletionHandler(){(success:Bool) -> Void in
+                    self.printOpenFile(success)
+                    if success {
+                       completion (success: success, document: document)                    }
+                }
+            } else {
+               completion (success: true, document: document)
+            }
+        }
+    }
+
     lazy var document: MyDocument? =  {
         
         let fileManager = NSFileManager.defaultManager()
@@ -61,30 +111,15 @@ class Database: NSObject {
         document.persistentStoreOptions =
                         [ NSMigratePersistentStoresAutomaticallyOption: true,
                           NSInferMappingModelAutomaticallyOption: true]
-        let printOpenFile = {  (success:Bool) -> Void in
-            if (success) {
-                print("File существует: Открыт")
-            } else {
-                print("File существует: Не могу открыть")
-            }
-        }
-        let printCreateFile = {  (success:Bool) -> Void in
-            if (success) {
-                print("File создан: Success")
-            } else {
-                print("Не могу создать file")
-            }
-        }
 
         if fileManager.fileExistsAtPath(url.path!) {
             document.openWithCompletionHandler(){(success:Bool) -> Void in
-                printOpenFile(success)
+                self.printOpenFile(success)
             }
         } else {
-            
             document.saveToURL(url, forSaveOperation: .ForCreating) { (success) -> Void in
                 // block для выполнения, когда документ создан
-                printCreateFile(success)
+                self.printCreateFile(success)
 
               }
         }

@@ -56,7 +56,11 @@ class CoreDataStack: NSObject {
     func saveMainContext() {
         if mainMoc.hasChanges {
             do {
+                let startTime = CFAbsoluteTimeGetCurrent()
                 try mainMoc.save()
+                let endTime = CFAbsoluteTimeGetCurrent()
+                let elapsedTime = (endTime - startTime) * 1000
+                print("Saving the context took \(elapsedTime) ms")
             } catch  {
                 fatalError("Ошибка сохранения main managed object context! \(error)")
             }

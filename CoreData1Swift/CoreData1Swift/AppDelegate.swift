@@ -7,7 +7,6 @@
 //
 
 import UIKit
-
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate, UISplitViewControllerDelegate {
 
@@ -17,6 +16,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UISplitViewControllerDele
     
     func application(application: UIApplication, didFinishLaunchingWithOptions
         launchOptions: [NSObject: AnyObject]?) -> Bool {
+        
         
         if let split = self.window?.rootViewController as? UISplitViewController,
             navigationMaster = split.viewControllers.first as? UINavigationController,
@@ -50,23 +50,18 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UISplitViewControllerDele
     // MARK: - Split view
     
     func splitViewController(splitViewController: UISplitViewController,
-        collapseSecondaryViewController secondaryViewController:UIViewController,
-        ontoPrimaryViewController primaryViewController:UIViewController) -> Bool {
-            
+                             collapseSecondaryViewController secondaryViewController:UIViewController,
+                                                             ontoPrimaryViewController primaryViewController:UIViewController) -> Bool {
+        
         guard let secondaryAsNav = secondaryViewController as? UINavigationController,
-              let topAsDetail = secondaryAsNav.topViewController as? ImageViewController where
-              topAsDetail.imageURL == nil else {return false}
-            
-            // Возврат true сигнализирует, что Detail должен быть отброшен
-            return true
+            let topAsDetail = secondaryAsNav.topViewController as? ImageViewController where
+            topAsDetail.imageURL == nil else {return false}
+        
+        // Возврат true сигнализирует, что Detail должен быть отброшен
+        return true
     }
     
     func applicationWillTerminate(application: UIApplication) {
-        // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
-        // Saves changes in the application's managed object context before the application terminates.
         coreDataStack.saveMainContext()
     }
-    
-   }
-
-
+}

@@ -44,6 +44,7 @@ final class Photo: NSManagedObject {
             managedObjectContext?.deleteObject(p)
         }
     }
+    
     static func newPhotos(json : [[String : AnyObject]],context: NSManagedObjectContext) {
         var uniques = [String]()
         let fetchRequest = NSFetchRequest(entityName: "Photo")
@@ -61,11 +62,10 @@ final class Photo: NSManagedObject {
         var news = Set(uniquesFlickr)
         news.subtractInPlace(uniquesSet)
         print ("кол-во новых элементов \(news.count)")
-     /*   for unic in news {
+  /*      for unic in news {
             if let index = json.indexOf({$0[FLICKR_PHOTO_ID] as? String == unic}){
                 _ =  Photo.init(json: json[index], context: context)
             }
         }*/
     }
-
 }

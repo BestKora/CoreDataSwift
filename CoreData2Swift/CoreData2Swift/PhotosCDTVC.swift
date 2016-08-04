@@ -10,8 +10,7 @@ import UIKit
 import CoreData
 
 class PhotosCDTVC: CoreDataTableViewController {
-    var database:  Database!
-    var document: MyDocument? { return database.document}
+    var document: MyDocument?
     
 
     // MARK: - Table View Data Source
@@ -37,12 +36,12 @@ class PhotosCDTVC: CoreDataTableViewController {
             guard let photo = self.fetchedResultsController?.objectAtIndexPath(indexPath) as? Photo,
                 let context = photo.managedObjectContext     else {return}
             context.deleteObject(photo)
-            document?.saveDocument()
+           document?.saveDocument()
         default:break
         }
     }
 
-    // MARK: - Storyboard
+      // MARK: - Storyboard
     
     private struct Storyboard {
         static let CellReuseIdentifier = "photoCell"
