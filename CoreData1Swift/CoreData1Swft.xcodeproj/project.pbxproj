@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		E43250581D584401005352BA /* CoreDataTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E43250571D584401005352BA /* CoreDataTableViewController.swift */; };
 		E4EFF3871C93397000560683 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = E4EFF3851C93397000560683 /* Main.storyboard */; };
 		E4EFF3891C93397000560683 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E4EFF3881C93397000560683 /* Assets.xcassets */; };
 		E4EFF38C1C93397000560683 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = E4EFF38A1C93397000560683 /* LaunchScreen.storyboard */; };
@@ -19,12 +20,12 @@
 		E4EFF3BE1C93444B00560683 /* Photographer.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4EFF3BD1C93444B00560683 /* Photographer.swift */; };
 		E4EFF3C21C9344E100560683 /* Photographer+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4EFF3C11C9344E100560683 /* Photographer+CoreDataProperties.swift */; };
 		E4EFF3C61C934DFD00560683 /* CoreDataStack.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4EFF3C51C934DFD00560683 /* CoreDataStack.swift */; };
-		E4EFF3C81C934E7B00560683 /* CoreDataTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4EFF3C71C934E7B00560683 /* CoreDataTableViewController.swift */; };
 		E4EFF3CA1C934FE400560683 /* PhotosCDTVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4EFF3C91C934FE400560683 /* PhotosCDTVC.swift */; };
 		E4F78EDD1C9DDD1C00DFB643 /* FlickrFetcher.m in Sources */ = {isa = PBXBuildFile; fileRef = E4F78EDC1C9DDD1C00DFB643 /* FlickrFetcher.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		E43250571D584401005352BA /* CoreDataTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CoreDataTableViewController.swift; sourceTree = "<group>"; };
 		E4EFF37E1C93397000560683 /* CoreData1Swft.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CoreData1Swft.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		E4EFF3861C93397000560683 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		E4EFF3881C93397000560683 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -41,7 +42,6 @@
 		E4EFF3BD1C93444B00560683 /* Photographer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Photographer.swift; sourceTree = "<group>"; };
 		E4EFF3C11C9344E100560683 /* Photographer+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Photographer+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		E4EFF3C51C934DFD00560683 /* CoreDataStack.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CoreDataStack.swift; sourceTree = "<group>"; };
-		E4EFF3C71C934E7B00560683 /* CoreDataTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CoreDataTableViewController.swift; sourceTree = "<group>"; };
 		E4EFF3C91C934FE400560683 /* PhotosCDTVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PhotosCDTVC.swift; sourceTree = "<group>"; };
 		E4F78EDB1C9DDD1C00DFB643 /* CoreData1Swft-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "CoreData1Swft-Bridging-Header.h"; sourceTree = "<group>"; };
 		E4F78EDC1C9DDD1C00DFB643 /* FlickrFetcher.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FlickrFetcher.m; sourceTree = "<group>"; };
@@ -105,7 +105,6 @@
 			children = (
 				E4EFF39B1C933A0B00560683 /* ImageViewController.swift */,
 				E4EFF3C91C934FE400560683 /* PhotosCDTVC.swift */,
-				E4EFF3C71C934E7B00560683 /* CoreDataTableViewController.swift */,
 				E4EFF39D1C933A0B00560683 /* JustPostedFlickrPhotosTVC.swift */,
 			);
 			name = Controller;
@@ -120,6 +119,7 @@
 				E4EFF3C11C9344E100560683 /* Photographer+CoreDataProperties.swift */,
 				E4EFF3A81C933BC200560683 /* CoreData1Swift.xcdatamodeld */,
 				E4EFF3C51C934DFD00560683 /* CoreDataStack.swift */,
+				E43250571D584401005352BA /* CoreDataTableViewController.swift */,
 			);
 			name = "Core Data";
 			sourceTree = "<group>";
@@ -202,9 +202,9 @@
 				E4EFF3BC1C93434E00560683 /* Photo+CoreDataProperties.swift in Sources */,
 				E4EFF3CA1C934FE400560683 /* PhotosCDTVC.swift in Sources */,
 				E4EFF3A01C933A0B00560683 /* JustPostedFlickrPhotosTVC.swift in Sources */,
-				E4EFF3C81C934E7B00560683 /* CoreDataTableViewController.swift in Sources */,
 				E4EFF3B81C93423800560683 /* Photo.swift in Sources */,
 				E4EFF39E1C933A0B00560683 /* ImageViewController.swift in Sources */,
+				E43250581D584401005352BA /* CoreDataTableViewController.swift in Sources */,
 				E4F78EDD1C9DDD1C00DFB643 /* FlickrFetcher.m in Sources */,
 				E4EFF3AA1C933BC200560683 /* CoreData1Swift.xcdatamodeld in Sources */,
 			);
