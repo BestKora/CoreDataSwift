@@ -8,12 +8,23 @@
 import UIKit
 import CoreData
 
+extension NSManagedObjectContext
+{
+    public func saveThrows () {
+        do {
+            try save()
+        } catch let error  {
+            print("Core Data Error: \(error)")
+        }
+    }
+}
+
 class MyDocument :UIManagedDocument {
     
     override class func persistentStoreName() -> String{
         return "Flickr.sqlite"
     }
-    
+ 
     override func contentsForType(typeName: String) throws -> AnyObject {
         print ("Auto-Saving Document")
         return try! super.contentsForType(typeName)
@@ -28,45 +39,24 @@ class MyDocument :UIManagedDocument {
             
         }
     }
-    
-    func saveDocument(){
-        let fileNormal = documentState.contains([.Normal])
-        if  fileNormal {
-            saveToURL(fileURL,forSaveOperation: .ForOverwriting) { (success) -> Void in
-                // block для выполнения после сохранения документа
-                if (success) {
-                    print("Запись: Success")
-                } else {
-                    print("Не могу записать file")
-                }
-            }
-        } else {
-            print("Документ не открыт, его состояние \(documentState)")
-        }
-    }
 }
 
-class Database: NSObject {
-    let printOpenFile: (Bool) -> Void = {  (success:Bool) -> Void in
-        if (success) {
-            print("File существует: Открыт")
-        } else {
-            print("File существует: Не могу открыть")
+extension UIManagedDocument
+{
+    func save () {
+        do {
+            try self.managedObjectContext.save()
+        } catch let error  {
+            print("Core Data Error: \(error)")
         }
     }
     
-    let printCreateFile: (Bool) -> Void  = {  (success:Bool) -> Void in
-        if (success) {
-            print("File создан: Success")
-        } else {
-            print("Не могу создать file")
-        }
-    }
-
-    func useDocument (completion: (success:Bool, document: MyDocument) -> Void) {
+    class func useDocument (completion: (success:Bool, document: MyDocument) -> Void) {
         let fileManager = NSFileManager.defaultManager()
         let doc = "database"
-        let url = self.dir.URLByAppendingPathComponent(doc)
+        let urls = NSFileManager.defaultManager().URLsForDirectory(.DocumentDirectory,
+                                                                   inDomains: .UserDomainMask)
+        let url = urls[urls.count-1].URLByAppendingPathComponent(doc)
         print (url)
         let document = MyDocument(fileURL: url)
         document.persistentStoreOptions =
@@ -83,20 +73,78 @@ class Database: NSObject {
         
         if !fileManager.fileExistsAtPath(url.path!) {
             document.saveToURL(url, forSaveOperation: .ForCreating) { (success) -> Void in
-                // block для выполнения, когда документ создан
-                self.printCreateFile(success)
                 if success {
-                   completion (success: success, document: document)                }
+                    print("File создан: Success")
+                    completion (success: success, document: document)                }
             }
         }else  {
             if document.documentState == .Closed {
                 document.openWithCompletionHandler(){(success:Bool) -> Void in
-                    self.printOpenFile(success)
                     if success {
-                       completion (success: success, document: document)                    }
+                        print("File существует: Открыт")
+                        completion (success: success, document: document)                    }
                 }
             } else {
-               completion (success: true, document: document)
+                completion (success: true, document: document)
+            }
+        }
+    }
+
+ }
+
+
+/*class Database {
+    let printOpenFile: (Bool) -> Void = {  (success:Bool) -> Void in
+        if (success) {
+            print("File существует: Открыт")
+        } else {
+            print("File существует: Не могу открыть")
+        }
+    }
+    
+    let printCreateFile: (Bool) -> Void  = {  (success:Bool) -> Void in
+        if (success) {
+            print("File создан: Success")
+        } else {
+            print("Не могу создать file")
+        }
+    }
+
+    class func useDocument (completion: (success:Bool, document: MyDocument) -> Void) {
+        let fileManager = NSFileManager.defaultManager()
+        let doc = "database"
+        let urls = NSFileManager.defaultManager().URLsForDirectory(.DocumentDirectory,
+                                                                   inDomains: .UserDomainMask)
+        let url = urls[urls.count-1].URLByAppendingPathComponent(doc)
+        print (url)
+        let document = MyDocument(fileURL: url)
+        document.persistentStoreOptions =
+            [ NSMigratePersistentStoresAutomaticallyOption: true,
+              NSInferMappingModelAutomaticallyOption: true]
+        
+        document.managedObjectContext.mergePolicy = NSMergeByPropertyObjectTrumpMergePolicy
+        
+        if let parentContext = document.managedObjectContext.parentContext{
+            parentContext.performBlock {
+                parentContext.mergePolicy =  NSMergeByPropertyObjectTrumpMergePolicy
+            }
+        }
+        
+        if !fileManager.fileExistsAtPath(url.path!) {
+            document.saveToURL(url, forSaveOperation: .ForCreating) { (success) -> Void in
+                if success {
+                    print("File создан: Success")
+                    completion (success: success, document: document)                }
+            }
+        }else  {
+            if document.documentState == .Closed {
+                document.openWithCompletionHandler(){(success:Bool) -> Void in
+                    if success {
+                        print("File существует: Открыт")
+                        completion (success: success, document: document)                    }
+                }
+            } else {
+                completion (success: true, document: document)
             }
         }
     }
@@ -141,6 +189,6 @@ class Database: NSObject {
     }()
     
    }
-
+*/
 //NSMergeByPropertyStoreTrumpMergePolicy
 

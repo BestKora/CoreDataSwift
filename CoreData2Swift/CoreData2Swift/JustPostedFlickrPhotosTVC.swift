@@ -10,6 +10,7 @@ import UIKit
 import CoreData
 
 class JustPostedFlickrPhotosTVC: PhotosCDTVC {
+//    var document: MyDocument?
     var moc: NSManagedObjectContext? {
         didSet {
         if let context = moc {
@@ -19,15 +20,13 @@ class JustPostedFlickrPhotosTVC: PhotosCDTVC {
         }
     }
     
- 
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
         if moc == nil {
-     //       useDocument()
-            Database ().useDocument{ (success, document) in
+            UIManagedDocument.useDocument{ (success, document) in
                 if success {
                     self.moc =  document.managedObjectContext
-                    self.document = document;
+ //                   self.document = document;
                 }
             }
         }
@@ -77,8 +76,8 @@ class JustPostedFlickrPhotosTVC: PhotosCDTVC {
                                      return Photo.init(json: json, context: context) })
                    
                     let startTime = CFAbsoluteTimeGetCurrent()
-                    
-                   self.document?.saveDocument()
+               //      self.document?.save()
+                    context.saveThrows()
                     
                     let endTime = CFAbsoluteTimeGetCurrent()
                     let elapsedTime = (endTime - startTime) * 1000

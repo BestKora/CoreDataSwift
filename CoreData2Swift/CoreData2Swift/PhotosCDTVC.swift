@@ -10,7 +10,7 @@ import UIKit
 import CoreData
 
 class PhotosCDTVC: CoreDataTableViewController {
-    var document: MyDocument?
+//    var document: MyDocument?
     
 
     // MARK: - Table View Data Source
@@ -36,7 +36,9 @@ class PhotosCDTVC: CoreDataTableViewController {
             guard let photo = self.fetchedResultsController?.objectAtIndexPath(indexPath) as? Photo,
                 let context = photo.managedObjectContext     else {return}
             context.deleteObject(photo)
-           document?.saveDocument()
+         //  document?.save()
+            context.saveThrows()
+            
         default:break
         }
     }
