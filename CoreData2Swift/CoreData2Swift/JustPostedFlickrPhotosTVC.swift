@@ -10,7 +10,7 @@ import UIKit
 import CoreData
 
 class JustPostedFlickrPhotosTVC: PhotosCDTVC {
-//    var document: MyDocument?
+
     var moc: NSManagedObjectContext? {
         didSet {
         if let context = moc {
@@ -26,7 +26,6 @@ class JustPostedFlickrPhotosTVC: PhotosCDTVC {
             UIManagedDocument.useDocument{ (success, document) in
                 if success {
                     self.moc =  document.managedObjectContext
- //                   self.document = document;
                 }
             }
         }
@@ -76,7 +75,6 @@ class JustPostedFlickrPhotosTVC: PhotosCDTVC {
                                      return Photo.init(json: json, context: context) })
                    
                     let startTime = CFAbsoluteTimeGetCurrent()
-               //      self.document?.save()
                     context.saveThrows()
                     
                     let endTime = CFAbsoluteTimeGetCurrent()
@@ -87,75 +85,6 @@ class JustPostedFlickrPhotosTVC: PhotosCDTVC {
             task.resume()
         }
     }
-/*
-    func useDocument () {
-        let fileManager = NSFileManager.defaultManager()
-        let doc = "database"
-        let url = self.dir.URLByAppendingPathComponent(doc)
-        print (url)
-        let document = MyDocument(fileURL: url)
-        document.persistentStoreOptions =
-            [ NSMigratePersistentStoresAutomaticallyOption: true,
-              NSInferMappingModelAutomaticallyOption: true]
-      
-        document.managedObjectContext.mergePolicy = NSMergeByPropertyObjectTrumpMergePolicy
-        
-        if let parentContext = document.managedObjectContext.parentContext{
-            parentContext.performBlock {
-                parentContext.mergePolicy =  NSMergeByPropertyObjectTrumpMergePolicy
-            }
-        }
-
-        if !fileManager.fileExistsAtPath(url.path!) {
-            document.saveToURL(url, forSaveOperation: .ForCreating) { (success) -> Void in
-                // block для выполнения, когда документ создан
-                self.printCreateFile(success)
-                if success {
-                    self.moc =  document.managedObjectContext
-                    self.document = document;
-                }
-            }
-        }else  {
-            if document.documentState == .Closed {
-                document.openWithCompletionHandler(){(success:Bool) -> Void in
-                    self.printOpenFile(success)
-                    if success {
-                        self.moc =  document.managedObjectContext
-                        self.document = document;
-                    }
-                }
-            } else {
-                self.moc =  document.managedObjectContext
-                self.document = document;
-                
-            }
-        }
-    }
-    
-    
-
-    
-    private lazy var dir: NSURL = {
-        let urls = NSFileManager.defaultManager().URLsForDirectory(.DocumentDirectory,
-                                                                   inDomains: .UserDomainMask)
-        return urls[urls.count-1]
-    }()
-    let printOpenFile: (Bool) -> Void = {  (success:Bool) -> Void in
-        if (success) {
-            print("File существует: Открыт")
-        } else {
-            print("File существует: Не могу открыть")
-        }
-    }
-    
-    let printCreateFile: (Bool) -> Void  = {  (success:Bool) -> Void in
-        if (success) {
-            print("File создан: Success")
-        } else {
-            print("Не могу создать file")
-        }
-    }*/
-
 }
 
 
